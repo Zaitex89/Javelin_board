@@ -4,149 +4,123 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --board:#E7EBED;
-    --paper:#FBFBFA;
-    --ink:#1C2B33;
-    --muted:#67777F;
-    --rule:#CBD3D8;
-    --rule-soft:#DCE2E6;
-    --signal:#F0B429;
-    --signal-fill:#FCEBC4;
-    --signal-edge:#D99A0B;
-    --ok:#2E7D5B;
-    --no:#B4453C;
-    --bar-kund:#5B8CA8;
-    --bar-problem:#A8795B;
-    --bar-losning:#5B8C6E;
-    --bar-metod:#7B7BA8;
-    --bar-kriterium:#4F8C8C;
-    --bar-resultat:#7E8A91;
+    --page:#FFFFFF;
+    --ink:#1F2230;
+    --muted:#6B7280;
+    --rule:#D9D5E4;
+    --head:#6E6193;
+    --head-ink:#FFFFFF;
+    --lab-pre:#EFEBF6;
+    --lab-pre-ink:#4A3F6B;
+    --lab-post:#F3E6C4;
+    --lab-post-ink:#6B5416;
+    --cell-pre:#FFFFFF;
+    --cell-post:#FDF8EC;
+    --band:#2B3047;
+    --accent:#6E6193;
   }
   *{box-sizing:border-box}
   body{margin:0}
   .jb{
     font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
-    color:var(--ink);
-    background:
-      repeating-linear-gradient(to right, rgba(28,43,51,.045) 0 1px, transparent 1px 24px),
-      repeating-linear-gradient(to bottom, rgba(28,43,51,.045) 0 1px, transparent 1px 24px),
-      var(--board);
-    border:1px solid var(--rule);
-    border-radius:2px;
-    padding:18px;
+    color:var(--ink);background:var(--page);padding:20px;
   }
-
   .jb-top{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
-  .jb-title{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0}
-  .jb-sub{font-size:13px;color:var(--muted);margin:4px 0 0;line-height:1.4}
+  .jb-title{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0}
+  .jb-sub{font-size:13px;color:var(--muted);margin:5px 0 0;line-height:1.4}
   .jb-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
   .jb-btn{
     font:inherit;font-size:12.5px;font-weight:500;color:var(--ink);
-    background:var(--paper);border:1px solid var(--rule);border-radius:2px;
-    padding:7px 11px;cursor:pointer;
+    background:#fff;border:1px solid var(--rule);border-radius:3px;padding:7px 11px;cursor:pointer;
   }
-  .jb-btn:hover{background:#fff;border-color:var(--muted)}
+  .jb-btn:hover{background:#F6F4FA;border-color:var(--accent)}
   .jb-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
   .jb-saved{font-size:12px;color:var(--muted);opacity:0;transition:opacity .25s}
   .jb-saved.on{opacity:1}
 
   .jb-scroll{overflow-x:auto;padding-bottom:6px}
   .jb-grid{
-    display:grid;
-    grid-template-columns:186px repeat(5,minmax(232px,1fr));
-    gap:1px;
-    background:var(--rule-soft);
-    border:1px solid var(--rule);
-    min-width:1340px;
+    display:grid;gap:2px;background:var(--rule);
+    border:2px solid var(--rule);border-radius:4px;overflow:hidden;
   }
 
-  .jb-corner,.jb-col{background:var(--board);padding:10px 12px}
-  .jb-corner{position:sticky;left:0;z-index:3}
-  .jb-col-name{font-size:14px;font-weight:600;letter-spacing:-.01em}
-  .jb-verdicts{display:flex;gap:4px;margin-top:7px}
-  .jb-v{
-    font:inherit;font-size:11px;color:var(--muted);background:transparent;
-    border:1px solid var(--rule);border-radius:99px;padding:2px 8px;cursor:pointer;
-  }
-  .jb-v[aria-pressed="true"]{color:var(--ink);font-weight:600;background:#fff;border-color:var(--ink)}
-  .jb-v[data-v="ok"][aria-pressed="true"]{color:var(--ok);border-color:var(--ok)}
-  .jb-v[data-v="no"][aria-pressed="true"]{color:var(--no);border-color:var(--no)}
+  .jb-corner{background:var(--page)}
+  .jb-col{background:var(--head);color:var(--head-ink);padding:11px 13px;font-size:14px;font-weight:600}
 
-  .jb-row-label{
-    background:var(--board);padding:12px;position:sticky;left:0;z-index:2;
-    border-right:1px solid var(--rule);
-  }
-  .jb-row-name{font-size:14px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
-  .jb-row-hint{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.35}
-  .jb-row-label.is-key{background:var(--signal-fill)}
-  .jb-row-label.is-key .jb-row-hint{color:#8a6a12}
+  .jb-row-label{padding:11px 13px;position:sticky;left:0;z-index:2}
+  .jb-row-label.pre{background:var(--lab-pre);color:var(--lab-pre-ink)}
+  .jb-row-label.post{background:var(--lab-post);color:var(--lab-post-ink)}
+  .jb-row-name{font-size:14px;font-weight:700;line-height:1.2;letter-spacing:-.01em}
+  .jb-row-hint{font-size:10.5px;margin-top:4px;line-height:1.35;opacity:.72;font-weight:500}
 
-  .jb-cell{background:#F1F4F5;padding:9px;min-height:104px;display:flex;flex-direction:column;gap:8px}
-  .jb-cell.is-key{background:#FAF4E6}
-  .jb-cell.over{background:#fff;box-shadow:inset 0 0 0 2px var(--ink)}
-
-  .jb-card{
-    position:relative;display:flex;align-items:stretch;gap:0;
-    background:var(--paper);border:1px solid var(--rule);
-    box-shadow:0 1px 0 rgba(28,43,51,.08);
+  .jb-band{
+    grid-column:1 / -1;background:var(--band);color:#fff;
+    padding:9px 13px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   }
-  .jb-card.is-key{background:var(--signal-fill);border-color:var(--signal-edge)}
+
+  .jb-cell{padding:8px;min-height:74px;display:flex;flex-direction:column;gap:7px}
+  .jb-cell.pre{background:var(--cell-pre)}
+  .jb-cell.post{background:var(--cell-post)}
+  .jb-cell.over{box-shadow:inset 0 0 0 2px var(--accent)}
+
+  .jb-card{position:relative;display:flex;align-items:stretch;background:transparent}
   .jb-card.dragging{opacity:.28}
   .jb-grip{
-    flex:0 0 14px;cursor:grab;touch-action:none;
-    background:var(--bar,#9AA7AE);
-    border:none;padding:0;
+    flex:0 0 5px;cursor:grab;touch-action:none;background:var(--accent);
+    border:none;padding:0;border-radius:2px;opacity:.28;
   }
-  .jb-card.is-key .jb-grip{background:var(--signal-edge)}
+  .jb-card:hover .jb-grip{opacity:.7}
   .jb-grip:active{cursor:grabbing}
-  .jb-grip:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
   .jb-text{
-    flex:1;padding:9px 24px 9px 10px;font-size:13px;line-height:1.45;
-    min-height:38px;white-space:pre-wrap;overflow-wrap:anywhere;
+    flex:1;padding:2px 20px 2px 9px;font-size:13px;line-height:1.5;
+    min-height:22px;white-space:pre-wrap;overflow-wrap:anywhere;
   }
-  .jb-text:focus{outline:none;background:#fff;box-shadow:inset 0 0 0 1px var(--ink)}
+  .jb-text:focus{outline:none;background:#F6F4FA;box-shadow:inset 0 0 0 1px var(--accent)}
   .jb-del{
-    position:absolute;top:3px;right:3px;width:20px;height:20px;line-height:1;
-    font:inherit;font-size:15px;color:var(--muted);background:transparent;border:none;
-    cursor:pointer;border-radius:2px;padding:0;
+    position:absolute;top:0;right:0;width:18px;height:18px;line-height:1;
+    font:inherit;font-size:14px;color:transparent;background:transparent;border:none;cursor:pointer;padding:0;
   }
-  .jb-del:hover{color:var(--no);background:rgba(0,0,0,.05)}
+  .jb-card:hover .jb-del{color:var(--muted)}
+  .jb-del:hover{color:#B4453C}
 
   .jb-add{
-    font:inherit;font-size:12px;color:var(--muted);background:transparent;
-    border:1px dashed var(--rule);border-radius:2px;padding:6px;cursor:pointer;text-align:left;
+    font:inherit;font-size:11.5px;color:#A5A0B5;background:transparent;
+    border:none;padding:2px 0 0 9px;cursor:pointer;text-align:left;
   }
-  .jb-add:hover{color:var(--ink);border-color:var(--muted);background:rgba(255,255,255,.6)}
-  .jb-note{font-size:12px;color:var(--muted);line-height:1.45;font-style:italic}
+  .jb-add:hover{color:var(--accent)}
+  .jb-note{font-size:12px;color:#A5A0B5;line-height:1.45;font-style:italic;padding-left:9px}
 
-  .jb-park{margin-top:18px;border:1px solid var(--rule);background:#F1F4F5;padding:12px}
+  .jb-summary{
+    margin-top:16px;font-size:13px;line-height:1.6;font-style:italic;color:#3C4256;
+    max-width:96ch;padding:10px 12px;border-left:3px solid var(--accent);background:#FAF9FC;
+  }
+  .jb-summary:focus{outline:none;background:#F3F1F8}
+
+  .jb-park{margin-top:22px;border:1px solid var(--rule);border-radius:4px;background:#FAF9FC;padding:12px}
   .jb-park-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .jb-park-name{font-size:14px;font-weight:600}
-  .jb-park-hint{font-size:12px;color:var(--muted)}
-  .jb-park-cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:56px}
-  .jb-park-cards .jb-card{width:236px}
-  .jb-park-cards.over{box-shadow:inset 0 0 0 2px var(--ink);background:#fff}
+  .jb-park-name{font-size:13px;font-weight:700;color:var(--lab-pre-ink)}
+  .jb-park-hint{font-size:11.5px;color:var(--muted)}
+  .jb-park-cards{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:44px}
+  .jb-park-cards .jb-card{width:248px;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:5px 4px}
+  .jb-park-cards.over{box-shadow:inset 0 0 0 2px var(--accent)}
 
-  .jb-ghost{position:fixed;z-index:99;pointer-events:none;transform:rotate(1.5deg);
-    box-shadow:0 8px 18px rgba(28,43,51,.24)}
-
-  .jb-foot{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.5;max-width:72ch}
+  .jb-ghost{position:fixed;z-index:99;pointer-events:none;background:#fff;
+    border:1px solid var(--accent);border-radius:3px;padding:6px;
+    box-shadow:0 8px 18px rgba(31,34,48,.22)}
+  .jb-foot{margin-top:14px;font-size:11.5px;color:#A5A0B5;line-height:1.5;max-width:72ch}
 
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-  @media (max-width:640px){
-    .jb{padding:12px}
-    .jb-title{font-size:21px}
-  }
 </style>
 
 <div class="jb">
   <div class="jb-top">
     <div>
-      <h1 class="jb-title">Javelin board</h1>
-      <p class="jb-sub">Första egna bostaden i Stockholm. Alex, Robin, Rasmus, Michael och Andy.</p>
+      <h1 class="jb-title">Javelin Experiment Board</h1>
+      <p class="jb-sub">Grupp: Alex, Robin, Rasmus, Michael och Andy. Första egna bostaden i Stockholm.</p>
     </div>
     <div class="jb-tools">
       <span class="jb-saved" id="jbSaved">Sparat</span>
+      <button class="jb-btn" id="jbAddCol">Lägg till iteration</button>
       <button class="jb-btn" id="jbCopy">Kopiera som text</button>
       <button class="jb-btn" id="jbReset">Börja om</button>
     </div>
@@ -156,37 +130,42 @@
     <div class="jb-grid" id="jbGrid"></div>
   </div>
 
+  <p class="jb-summary" id="jbSummary" contenteditable="true"></p>
+
   <div class="jb-park">
     <div class="jb-park-head">
       <span class="jb-park-name">Parkerade lösningsidéer</span>
-      <span class="jb-park-hint">Ligger utanför tavlan tills behovet är bekräftat. Dra upp en idé när ni når lösningsraden.</span>
+      <span class="jb-park-hint">Utanför tavlan. Låg här tills behovet var bekräftat.</span>
     </div>
     <div class="jb-park-cards dropzone" id="jbPark" data-row="park" data-col="park"></div>
     <button class="jb-btn" id="jbAddPark" style="margin-top:10px">Lägg till idé</button>
   </div>
 
-  <p class="jb-foot">Dra i den färgade listen till vänster på ett kort för att flytta det. Klicka i texten för att skriva om den. Allt sparas automatiskt i den här chatten.</p>
+  <p class="jb-foot">Dra i den smala listen till vänster om ett kort för att flytta det. Klicka i texten för att skriva om den. Allt sparas automatiskt.</p>
 </div>
 
 <script>
 (function(){
-  var KEY='javelin_board_v11';
+  var KEY='javelin_board_mall_v1';
 
   var ROWS=[
-    {key:'kund',      label:'Kund',                   hint:'Vem exakt, inte alla',        bar:'var(--bar-kund)'},
-    {key:'problem',   label:'Problem',                hint:'Vad hindrar dem idag',        bar:'var(--bar-problem)'},
-    {key:'losning',   label:'Lösning',                hint:'Tom tills behovet är bekräftat', bar:'var(--bar-losning)'},
-    {key:'antagande', label:'Riskigaste antagandet',  hint:'Det som fäller allt om det är fel', bar:'var(--signal-edge)', key_row:true},
-    {key:'metod',     label:'Metod',                  hint:'Hur vi testar antagandet',    bar:'var(--bar-metod)'},
-    {key:'kriterium', label:'Lyckandekriterium',      hint:'Bestäms före testet',         bar:'var(--bar-kriterium)'},
-    {key:'resultat',  label:'Resultat',               hint:'Vad svaren faktiskt visade',  bar:'var(--bar-resultat)'}
+    {key:'malgrupp',  label:'Målgrupp',            hint:'Vem undersöks?',                                   phase:'pre'},
+    {key:'problem',   label:'Problem',             hint:'Vilket behov eller hinder?',                       phase:'pre'},
+    {key:'losning',   label:'Lösningsidé',         hint:'När problemet fått stöd i test.',                  phase:'pre'},
+    {key:'antagande', label:'Kritiskt antagande',  hint:'Formulera antagandet som en prövbar hypotes.',     phase:'pre'},
+    {key:'metod',     label:'Metod',               hint:'Hur testar ni? Ange urval, omfattning och tidsram.',phase:'pre'},
+    {key:'kriterium', label:'Framgångskriterium',  hint:'Vilket mätbart utfall ska ge stöd åt hypotesen?',  phase:'pre'},
+    {key:'resultat',  label:'Resultat',            hint:'Vad observerade ni? Jämför med kriteriet.',        phase:'post'},
+    {key:'beslut',    label:'Beslut',              hint:'Fortsätta, ändra eller avsluta.',                  phase:'post'},
+    {key:'lardom',    label:'Lärdom',              hint:'Vad lärde ni er? Vad ska prövas härnäst?',         phase:'post'}
   ];
 
   var NOTES={
-    'losning|0':'Medvetet tom. Vi testar behovet innan vi bestämmer vad vi bygger.',
-    'losning|1':'Fortfarande tom. Vi prövade om tron på kön stämmer innan vi valde lösning.',
-    'losning|3':'Vi stannar vid tre iterationer. Frågan är besvarad.'
+    'losning|0':'Ännu ej definierad. Fokus på att först validera problemet.',
+    'losning|1':'Fortfarande tom. Vi prövade om tron på kön stämmer innan vi valde lösning.'
   };
+
+  var SUMMARY='Efter tre iterationer har vi förkastat vårt första antagande, att målgruppen upplever osäkerhet om vad de har chans på. I stället har vi validerat att de agerar utifrån en gissning de inte kan belägga, och att ett konkret besked om när de står först i kön får dem att agera. Det som flyttade dem var inte den dåliga siffran utan alternativet, alltså samma uträkning för ett annat område eller för nyproduktion. Nästa steg är att pröva say-do-gapet, alltså om de som sa sig vilja ställa sig i kön faktiskt gör det.';
 
   var uid=0;
   function nid(){ uid++; return 'c'+Date.now().toString(36)+uid; }
@@ -194,46 +173,43 @@
   function seed(){
     var c=[];
     function add(row,col,text){ c.push({id:nid(),row:row,col:col,text:text}); }
-    add('kund',0,'Unga vuxna 20 till 27 år i Stockholmsområdet som söker sitt första egna boende.');
+
+    add('malgrupp',0,'Unga vuxna 20 till 27 år i Stockholmsområdet som söker sitt första egna boende.');
     add('problem',0,'De kan inte bedöma vad som realistiskt är inom räckhåll, och lägger tid på köer och annonser som inte leder någonstans.');
     add('antagande',0,'Målgruppen upplever osäkerheten om vad de har chans på som ett problem i sig, inte bara bostadsbristen.');
-    add('metod',0,'Kundintervjuer i butik med 8 till 10 personer som sökt bostad senaste året.');
-    add('kriterium',0,'Minst 7 av 10 beskriver spontant att de inte vet vad de har chans på. Minst 3 berättar om något de redan gör för att kompensera.');
-    add('resultat',0,'Utfall: ej uppfyllt. Av 20 tillfrågade hade cirka 80 procent redan bostad, och de som faktiskt sökte visste vad de kunde få.');
+    add('metod',0,'Vi ställer tre korta frågor om sökandet till 20 personer i butik, under en dag.');
+    add('kriterium',0,'Minst 7 av 10 beskriver spontant att de inte vet vad de har chans på.');
+    add('resultat',0,'Cirka 80 procent hade redan bostad. De fyra som faktiskt sökte visste vad de kunde få. Kriteriet ej uppfyllt.');
+    add('beslut',0,'Ändra');
+    add('lardom',0,'Urvalet bet dåligt. Flera sa att det löser sig, utan att kunna säga varför. Den tron blev vårt nästa antagande.');
 
+    add('malgrupp',1,'Unga vuxna i Stockholm som ännu inte har egen bostad och räknar med att kön löser det.');
+    add('problem',1,'Vi har sett att unga vuxna i Stockholm har en uppfattning om hur lång tid bostadskön tar, men inte kan säga var den kommer ifrån. Därför tror vi att de fattar beslut på en gissning, och att en siffra de kan lita på skulle ändra vad de gör.');
+    add('antagande',1,'Målgruppen kan inte belägga sin uppskattning av kötiden och underskattar den.');
+    add('metod',1,'Vi ställer tre frågor till 10 personer. När tror du att du kan få en bostad genom kön? Var kommer den siffran ifrån? Vad har du gjort åt det hittills?');
+    add('kriterium',1,'Om 7 av 10 inte kan säga var deras uppskattning kommer ifrån.');
+    add('resultat',1,'8 av 10 kunde inte säga var siffran kom ifrån. Kriteriet uppfyllt.');
+    add('beslut',1,'Fortsätt');
+    add('lardom',1,'Det finns två sätt att ha fel. Fem underskattar och väntar lugnt. Tre skriver av kön helt och slutar söka. Nästa steg är att testa om ett konkret besked ändrar beteendet.');
 
-    add('kund',1,'Unga vuxna i Stockholm som ännu inte har egen bostad och räknar med att kön löser det.');
-    add('problem',1,'De har en uppfattning om hur lång tid det tar, men vet inte var den kommer ifrån. Fel uppfattning leder till att man väntar i stället för att agera.');
-    add('antagande',1,'Målgruppen underskattar sin faktiska kötid och kan inte säga var deras uppskattning kommer ifrån.');
-    add('metod',1,'10 intervjuer med tre frågor. När tror du att du kan få en bostad genom kön. Var kommer den siffran ifrån. Vad har du gjort åt det hittills.');
-    add('metod',1,'Svaren jämförs i efterhand mot Bostadsförmedlingens kötider för det område personen nämner.');
-    add('metod',1,'Rekrytering utanför butiken, för att inte upprepa urvalsfelet från iteration 1.');
-    add('kriterium',1,'7 av 10 kan inte säga var deras uppskattning kommer ifrån, och minst hälften gissar minst fem år fel.');
-    add('resultat',1,'Utfall: uppfyllt. 8 av 10 kunde inte säga var siffran kom ifrån. Fem underskattar och väntar, tre skriver av kön helt.');
-
-
-    add('kund',2,'Unga vuxna i Stockholm som har en gissning om kötid utan källa. Både de som underskattar och de som redan skrivit av kön.');
-    add('problem',2,'En siffra i antal år betyder inget för dem. De får ingen anledning att agera nu i stället för att vänta, eller att söka alls.');
-    add('losning',2,'Du fyller i ålder, när du ställde dig i kön, ungefär vad du kan betala och var du vill bo. Ut kommer en siffra: du står först i kön ungefär vid trettiofyra års ålder. Alternativt att du redan hade behövt ställa dig när du gick i sjunde klass.');
-    add('losning',2,'Sedan visar den samma siffra för närliggande områden, så att det inte bara blir ett slag i magen. Södermalm är omöjligt, men Jordbro är fyra år bort.');
-    add('antagande',2,'Att beskedet ändrar vad folk gör. Att siffran går att räkna fram vet vi redan, så det är inte det som ska testas.');
-    add('metod',2,'Papperstest på 10 personer. Fråga vad de tror, visa siffran, fråga vad de tänker göra nu.');
-    add('metod',2,'Siffrorna räknas ut i förväg för fem eller sex vanliga kombinationer av ålder och område och skrivs på lappar. Ingen kod behövs för testet.');
-    add('kriterium',2,'Minst 5 av 10 uppger något konkret de tänker göra, till exempel ställa sig i kön, bredda området eller titta på andrahand. Artiga svar som att det var intressant räknas inte.');
-    add('resultat',2,'Utfall: uppfyllt. 7 av 10 uppgav något konkret. Det som flyttade dem var inte den dåliga siffran utan den andra siffran, alltså samma uträkning för ett annat område eller för nyproduktion.');
-    add('resultat',2,'Slutsats: vi bygger Uppvakningen. Den ska visa två siffror bredvid varandra och lika stora. En för området personen vill bo i, en för ett alternativ. Alternativet var det som fick folk att agera.');
-    add('resultat',2,'Nyproduktion ska vara lätt att välja. I Farsta tar en vanlig lägenhet 13,2 år och en nybyggd 4,4 år. Nästan ingen vi frågade visste att den skillnaden fanns.');
-
+    add('malgrupp',2,'Unga vuxna i Stockholm som har en gissning om kötid utan källa, både de som underskattar och de som skrivit av kön.');
+    add('problem',2,'En siffra i antal år betyder inget för dem. De får ingen anledning att agera nu i stället för att vänta.');
+    add('losning',2,'Du fyller i ålder, kötid och var du vill bo, och får veta vid vilken ålder du står först i kön. Bredvid visas samma uträkning för fler alternativ, till exempel ett annat område eller en nybyggd lägenhet.');
+    add('antagande',2,'Att beskedet ändrar vad folk gör. Att siffran går att räkna fram vet vi redan.');
+    add('metod',2,'Papperstest på 10 personer. Vi frågar vad de tror, visar siffran och frågar vad de tänker göra nu. Siffrorna är uträknade i förväg för vanliga kombinationer av ålder och område.');
+    add('kriterium',2,'Om 5 av 10 uppger något konkret de tänker göra. Artiga svar räknas inte.');
+    add('resultat',2,'7 av 10 uppgav något konkret. Kriteriet uppfyllt.');
+    add('beslut',2,'Fortsätt');
+    add('lardom',2,'Det var inte den dåliga siffran som flyttade folk, utan alternativet (t.ex de andra lägenheterna). Den som fick värst besked gjorde ingenting. Kvar att pröva är say-do-gapet.');
 
     add('losning','park','Realistisk matchning mot inkomst, kötid och område.');
-    add('losning','park','Kökalkylator som visar väntetid per område.');
     add('losning','park','Bluffkoll som flaggar varningstecken i andrahandsannonser.');
     add('losning','park','Checklista för förstagångsflyttare, i rätt ordning.');
     add('losning','park','Hyresjämförelse mot faktiska nivåer i området.');
-    add('losning','park','Formulär med sex frågor om annonsen som ger grönt, gult eller rött.');
     add('losning','park','Färdig meddelandemall med frågor som avslöjar en bluffuthyrare.');
     add('losning','park','Kontraktskoll som visar vad som saknas i ett andrahandskontrakt.');
-    return {cards:c, verdicts:{0:'no',1:'ok',2:'ok'}};
+
+    return {cards:c, cols:3, summary:SUMMARY};
   }
 
   var state=seed();
@@ -242,6 +218,7 @@
   var park=document.getElementById('jbPark');
   var scroller=document.getElementById('jbScroll');
   var savedTag=document.getElementById('jbSaved');
+  var summaryEl=document.getElementById('jbSummary');
 
   var saveTimer=null;
   function save(){
@@ -268,14 +245,13 @@
     return state.cards.filter(function(c){ return c.row===row && String(c.col)===String(col); });
   }
 
-  function makeCard(c,rowDef){
+  function makeCard(c){
     var el=document.createElement('div');
-    el.className='jb-card'+(rowDef.key_row?' is-key':'');
+    el.className='jb-card';
     el.dataset.id=c.id;
 
     var grip=document.createElement('button');
     grip.className='jb-grip';
-    grip.style.setProperty('--bar',rowDef.bar);
     grip.setAttribute('aria-label','Flytta kortet');
     el.appendChild(grip);
 
@@ -300,7 +276,7 @@
     return el;
   }
 
-  function fillZone(zone,row,col,rowDef,focusId){
+  function fillZone(zone,row,col){
     zone.innerHTML='';
     var list=cardsIn(row,col);
     if(!list.length && NOTES[row+'|'+col]){
@@ -309,11 +285,12 @@
       n.textContent=NOTES[row+'|'+col];
       zone.appendChild(n);
     }
-    list.forEach(function(c){ zone.appendChild(makeCard(c,rowDef)); });
+    list.forEach(function(c){ zone.appendChild(makeCard(c)); });
     if(col!=='park'){
       var add=document.createElement('button');
       add.className='jb-add';
-      add.textContent='Lägg till kort';
+      add.textContent='+';
+      add.title='Lägg till kort';
       add.addEventListener('click',function(){
         var c={id:nid(),row:row,col:col,text:''};
         state.cards.push(c); render(c.id); save();
@@ -323,59 +300,55 @@
   }
 
   function render(focusId){
+    var n=state.cols||3;
     grid.innerHTML='';
+    grid.style.gridTemplateColumns='176px repeat('+n+',minmax(230px,1fr))';
+    grid.style.minWidth=(176+n*236)+'px';
 
     var corner=document.createElement('div');
     corner.className='jb-corner';
     grid.appendChild(corner);
 
-    for(var i=0;i<5;i++){
-      (function(i){
-        var h=document.createElement('div');
-        h.className='jb-col';
-        var nm=document.createElement('div');
-        nm.className='jb-col-name';
-        nm.textContent='Iteration '+(i+1);
-        h.appendChild(nm);
-        var vs=document.createElement('div');
-        vs.className='jb-verdicts';
-        [['open','Pågår'],['ok','Bekräftad'],['no','Förkastad']].forEach(function(p){
-          var b=document.createElement('button');
-          b.className='jb-v'; b.dataset.v=p[0]; b.textContent=p[1];
-          var cur=state.verdicts[i]||'open';
-          b.setAttribute('aria-pressed',cur===p[0]?'true':'false');
-          b.addEventListener('click',function(){ state.verdicts[i]=p[0]; render(); save(); });
-          vs.appendChild(b);
-        });
-        h.appendChild(vs);
-        grid.appendChild(h);
-      })(i);
+    for(var i=0;i<n;i++){
+      var h=document.createElement('div');
+      h.className='jb-col';
+      h.textContent='Iteration '+(i+1);
+      grid.appendChild(h);
     }
 
     ROWS.forEach(function(r){
+      if(r.key==='resultat'){
+        var band=document.createElement('div');
+        band.className='jb-band';
+        band.textContent='Genomför testet och dokumentera utfallet nedan';
+        grid.appendChild(band);
+      }
       var lab=document.createElement('div');
-      lab.className='jb-row-label'+(r.key_row?' is-key':'');
+      lab.className='jb-row-label '+r.phase;
       var nm=document.createElement('div'); nm.className='jb-row-name'; nm.textContent=r.label;
       var ht=document.createElement('div'); ht.className='jb-row-hint'; ht.textContent=r.hint;
       lab.appendChild(nm); lab.appendChild(ht);
       grid.appendChild(lab);
 
-      for(var i=0;i<5;i++){
+      for(var i=0;i<n;i++){
         var cell=document.createElement('div');
-        cell.className='jb-cell dropzone'+(r.key_row?' is-key':'');
+        cell.className='jb-cell dropzone '+r.phase;
         cell.dataset.row=r.key; cell.dataset.col=i;
-        fillZone(cell,r.key,i,r);
+        fillZone(cell,r.key,i);
         grid.appendChild(cell);
       }
     });
 
-    fillZone(park,'losning','park',ROWS[2]);
+    fillZone(park,'losning','park');
+    if(document.activeElement!==summaryEl) summaryEl.textContent=state.summary||'';
 
     if(focusId){
       var el=document.querySelector('[data-id="'+focusId+'"] .jb-text');
       if(el) el.focus();
     }
   }
+
+  summaryEl.addEventListener('input',function(){ state.summary=summaryEl.textContent; save(); });
 
   var drag=null;
   function attachDrag(grip,cardEl,c){
@@ -391,9 +364,11 @@
       if(!drag.moved){
         if(Math.abs(e.clientX-drag.sx)<5 && Math.abs(e.clientY-drag.sy)<5) return;
         drag.moved=true;
-        var g=drag.el.cloneNode(true);
-        g.className='jb-card jb-ghost'+(drag.el.classList.contains('is-key')?' is-key':'');
+        var g=document.createElement('div');
+        g.className='jb-ghost';
         g.style.width=drag.w+'px';
+        g.style.font="13px 'Archivo',sans-serif";
+        g.textContent=drag.c.text;
         document.body.appendChild(g);
         drag.ghost=g;
         drag.el.classList.add('dragging');
@@ -430,6 +405,10 @@
     grip.addEventListener('pointercancel',finish);
   }
 
+  document.getElementById('jbAddCol').addEventListener('click',function(){
+    state.cols=(state.cols||3)+1; render(); save();
+  });
+
   document.getElementById('jbAddPark').addEventListener('click',function(){
     var c={id:nid(),row:'losning',col:'park',text:''};
     state.cards.push(c); render(c.id); save();
@@ -441,12 +420,12 @@
   });
 
   document.getElementById('jbCopy').addEventListener('click',function(){
-    var out=['JAVELIN BOARD','Första egna bostaden i Stockholm',''];
-    var names={open:'Pågår',ok:'Bekräftad',no:'Förkastad'};
-    for(var i=0;i<5;i++){
+    var out=['JAVELIN EXPERIMENT BOARD','Grupp: Alex, Robin, Rasmus, Michael och Andy',''];
+    var n=state.cols||3;
+    for(var i=0;i<n;i++){
       var any=ROWS.some(function(r){return cardsIn(r.key,i).length;});
       if(!any) continue;
-      out.push('ITERATION '+(i+1)+' ['+names[state.verdicts[i]||'open']+']');
+      out.push('ITERATION '+(i+1));
       ROWS.forEach(function(r){
         var l=cardsIn(r.key,i);
         if(!l.length) return;
@@ -455,6 +434,7 @@
       });
       out.push('');
     }
+    if(state.summary){ out.push('SAMMANFATTNING'); out.push(state.summary); out.push(''); }
     var p=cardsIn('losning','park');
     if(p.length){
       out.push('PARKERADE LÖSNINGSIDÉER');
