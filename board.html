@@ -1,0 +1,471 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --board:#E7EBED;
+    --paper:#FBFBFA;
+    --ink:#1C2B33;
+    --muted:#67777F;
+    --rule:#CBD3D8;
+    --rule-soft:#DCE2E6;
+    --signal:#F0B429;
+    --signal-fill:#FCEBC4;
+    --signal-edge:#D99A0B;
+    --ok:#2E7D5B;
+    --no:#B4453C;
+    --bar-kund:#5B8CA8;
+    --bar-problem:#A8795B;
+    --bar-losning:#5B8C6E;
+    --bar-metod:#7B7BA8;
+    --bar-kriterium:#4F8C8C;
+    --bar-resultat:#7E8A91;
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .jb{
+    font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+    color:var(--ink);
+    background:
+      repeating-linear-gradient(to right, rgba(28,43,51,.045) 0 1px, transparent 1px 24px),
+      repeating-linear-gradient(to bottom, rgba(28,43,51,.045) 0 1px, transparent 1px 24px),
+      var(--board);
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:18px;
+  }
+
+  .jb-top{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+  .jb-title{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0}
+  .jb-sub{font-size:13px;color:var(--muted);margin:4px 0 0;line-height:1.4}
+  .jb-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .jb-btn{
+    font:inherit;font-size:12.5px;font-weight:500;color:var(--ink);
+    background:var(--paper);border:1px solid var(--rule);border-radius:2px;
+    padding:7px 11px;cursor:pointer;
+  }
+  .jb-btn:hover{background:#fff;border-color:var(--muted)}
+  .jb-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .jb-saved{font-size:12px;color:var(--muted);opacity:0;transition:opacity .25s}
+  .jb-saved.on{opacity:1}
+
+  .jb-scroll{overflow-x:auto;padding-bottom:6px}
+  .jb-grid{
+    display:grid;
+    grid-template-columns:186px repeat(5,minmax(232px,1fr));
+    gap:1px;
+    background:var(--rule-soft);
+    border:1px solid var(--rule);
+    min-width:1340px;
+  }
+
+  .jb-corner,.jb-col{background:var(--board);padding:10px 12px}
+  .jb-corner{position:sticky;left:0;z-index:3}
+  .jb-col-name{font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .jb-verdicts{display:flex;gap:4px;margin-top:7px}
+  .jb-v{
+    font:inherit;font-size:11px;color:var(--muted);background:transparent;
+    border:1px solid var(--rule);border-radius:99px;padding:2px 8px;cursor:pointer;
+  }
+  .jb-v[aria-pressed="true"]{color:var(--ink);font-weight:600;background:#fff;border-color:var(--ink)}
+  .jb-v[data-v="ok"][aria-pressed="true"]{color:var(--ok);border-color:var(--ok)}
+  .jb-v[data-v="no"][aria-pressed="true"]{color:var(--no);border-color:var(--no)}
+
+  .jb-row-label{
+    background:var(--board);padding:12px;position:sticky;left:0;z-index:2;
+    border-right:1px solid var(--rule);
+  }
+  .jb-row-name{font-size:14px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+  .jb-row-hint{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.35}
+  .jb-row-label.is-key{background:var(--signal-fill)}
+  .jb-row-label.is-key .jb-row-hint{color:#8a6a12}
+
+  .jb-cell{background:#F1F4F5;padding:9px;min-height:104px;display:flex;flex-direction:column;gap:8px}
+  .jb-cell.is-key{background:#FAF4E6}
+  .jb-cell.over{background:#fff;box-shadow:inset 0 0 0 2px var(--ink)}
+
+  .jb-card{
+    position:relative;display:flex;align-items:stretch;gap:0;
+    background:var(--paper);border:1px solid var(--rule);
+    box-shadow:0 1px 0 rgba(28,43,51,.08);
+  }
+  .jb-card.is-key{background:var(--signal-fill);border-color:var(--signal-edge)}
+  .jb-card.dragging{opacity:.28}
+  .jb-grip{
+    flex:0 0 14px;cursor:grab;touch-action:none;
+    background:var(--bar,#9AA7AE);
+    border:none;padding:0;
+  }
+  .jb-card.is-key .jb-grip{background:var(--signal-edge)}
+  .jb-grip:active{cursor:grabbing}
+  .jb-grip:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+  .jb-text{
+    flex:1;padding:9px 24px 9px 10px;font-size:13px;line-height:1.45;
+    min-height:38px;white-space:pre-wrap;overflow-wrap:anywhere;
+  }
+  .jb-text:focus{outline:none;background:#fff;box-shadow:inset 0 0 0 1px var(--ink)}
+  .jb-del{
+    position:absolute;top:3px;right:3px;width:20px;height:20px;line-height:1;
+    font:inherit;font-size:15px;color:var(--muted);background:transparent;border:none;
+    cursor:pointer;border-radius:2px;padding:0;
+  }
+  .jb-del:hover{color:var(--no);background:rgba(0,0,0,.05)}
+
+  .jb-add{
+    font:inherit;font-size:12px;color:var(--muted);background:transparent;
+    border:1px dashed var(--rule);border-radius:2px;padding:6px;cursor:pointer;text-align:left;
+  }
+  .jb-add:hover{color:var(--ink);border-color:var(--muted);background:rgba(255,255,255,.6)}
+  .jb-note{font-size:12px;color:var(--muted);line-height:1.45;font-style:italic}
+
+  .jb-park{margin-top:18px;border:1px solid var(--rule);background:#F1F4F5;padding:12px}
+  .jb-park-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .jb-park-name{font-size:14px;font-weight:600}
+  .jb-park-hint{font-size:12px;color:var(--muted)}
+  .jb-park-cards{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:56px}
+  .jb-park-cards .jb-card{width:236px}
+  .jb-park-cards.over{box-shadow:inset 0 0 0 2px var(--ink);background:#fff}
+
+  .jb-ghost{position:fixed;z-index:99;pointer-events:none;transform:rotate(1.5deg);
+    box-shadow:0 8px 18px rgba(28,43,51,.24)}
+
+  .jb-foot{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.5;max-width:72ch}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (max-width:640px){
+    .jb{padding:12px}
+    .jb-title{font-size:21px}
+  }
+</style>
+
+<div class="jb">
+  <div class="jb-top">
+    <div>
+      <h1 class="jb-title">Javelin board</h1>
+      <p class="jb-sub">Första egna bostaden i Stockholm. Alex, Robin, Rasmus, Michael och Andy.</p>
+    </div>
+    <div class="jb-tools">
+      <span class="jb-saved" id="jbSaved">Sparat</span>
+      <button class="jb-btn" id="jbCopy">Kopiera som text</button>
+      <button class="jb-btn" id="jbReset">Börja om</button>
+    </div>
+  </div>
+
+  <div class="jb-scroll" id="jbScroll">
+    <div class="jb-grid" id="jbGrid"></div>
+  </div>
+
+  <div class="jb-park">
+    <div class="jb-park-head">
+      <span class="jb-park-name">Parkerade lösningsidéer</span>
+      <span class="jb-park-hint">Ligger utanför tavlan tills behovet är bekräftat. Dra upp en idé när ni når lösningsraden.</span>
+    </div>
+    <div class="jb-park-cards dropzone" id="jbPark" data-row="park" data-col="park"></div>
+    <button class="jb-btn" id="jbAddPark" style="margin-top:10px">Lägg till idé</button>
+  </div>
+
+  <p class="jb-foot">Dra i den färgade listen till vänster på ett kort för att flytta det. Klicka i texten för att skriva om den. Allt sparas automatiskt i den här chatten.</p>
+</div>
+
+<script>
+(function(){
+  var KEY='javelin_board_original_v1';
+
+  var ROWS=[
+    {key:'kund',      label:'Kund',                   hint:'Vem exakt, inte alla',        bar:'var(--bar-kund)'},
+    {key:'problem',   label:'Problem',                hint:'Vad hindrar dem idag',        bar:'var(--bar-problem)'},
+    {key:'losning',   label:'Lösning',                hint:'Tom tills behovet är bekräftat', bar:'var(--bar-losning)'},
+    {key:'antagande', label:'Riskigaste antagandet',  hint:'Det som fäller allt om det är fel', bar:'var(--signal-edge)', key_row:true},
+    {key:'metod',     label:'Metod',                  hint:'Hur vi testar antagandet',    bar:'var(--bar-metod)'},
+    {key:'kriterium', label:'Lyckandekriterium',      hint:'Bestäms före testet',         bar:'var(--bar-kriterium)'}
+  ];
+
+  var NOTES={
+    'losning|0':'Medvetet tom. Vi testar behovet innan vi bestämmer vad vi bygger.',
+    'losning|1':'Fortfarande tom. Vi prövade om tron på kön stämmer innan vi valde lösning.',
+    'losning|3':'Vi stannar vid tre iterationer. Frågan är besvarad.'
+  };
+
+  var uid=0;
+  function nid(){ uid++; return 'c'+Date.now().toString(36)+uid; }
+
+  function seed(){
+    var c=[];
+    function add(row,col,text){ c.push({id:nid(),row:row,col:col,text:text}); }
+    add('kund',0,'Unga vuxna 20 till 27 år i Stockholmsområdet som söker sitt första egna boende.');
+    add('problem',0,'De kan inte bedöma vad som realistiskt är inom räckhåll, och lägger tid på köer och annonser som inte leder någonstans.');
+    add('antagande',0,'Målgruppen upplever osäkerheten om vad de har chans på som ett problem i sig, inte bara bostadsbristen.');
+    add('metod',0,'Kundintervjuer i butik med 8 till 10 personer som sökt bostad senaste året.');
+    add('kriterium',0,'Minst 7 av 10 beskriver spontant att de inte vet vad de har chans på. Minst 3 berättar om något de redan gör för att kompensera.');
+    add('kriterium',0,'Utfall: ej uppfyllt. Av 20 tillfrågade hade cirka 80 procent redan bostad, och de som faktiskt sökte visste vad de kunde få.');
+
+
+    add('kund',1,'Unga vuxna i Stockholm som ännu inte har egen bostad och räknar med att kön löser det.');
+    add('problem',1,'De har en uppfattning om hur lång tid det tar, men vet inte var den kommer ifrån. Fel uppfattning leder till att man väntar i stället för att agera.');
+    add('antagande',1,'Målgruppen underskattar sin faktiska kötid och kan inte säga var deras uppskattning kommer ifrån.');
+    add('metod',1,'10 intervjuer med tre frågor. När tror du att du kan få en bostad genom kön. Var kommer den siffran ifrån. Vad har du gjort åt det hittills.');
+    add('metod',1,'Svaren jämförs i efterhand mot Bostadsförmedlingens kötider för det område personen nämner.');
+    add('metod',1,'Rekrytering utanför butiken, för att inte upprepa urvalsfelet från iteration 1.');
+    add('kriterium',1,'7 av 10 kan inte säga var deras uppskattning kommer ifrån, och minst hälften gissar minst fem år fel.');
+    add('kriterium',1,'Utfall: uppfyllt. 8 av 10 kunde inte säga var siffran kom ifrån. Fem underskattar och väntar, tre skriver av kön helt.');
+
+
+    add('kund',2,'Unga vuxna i Stockholm som har en gissning om kötid utan källa. Både de som underskattar och de som redan skrivit av kön.');
+    add('problem',2,'En siffra i antal år betyder inget för dem. De får ingen anledning att agera nu i stället för att vänta, eller att söka alls.');
+    add('losning',2,'Du fyller i ålder, när du ställde dig i kön, ungefär vad du kan betala och var du vill bo. Ut kommer en siffra: du står först i kön ungefär vid trettiofyra års ålder. Alternativt att du redan hade behövt ställa dig när du gick i sjunde klass.');
+    add('losning',2,'Sedan visar den samma siffra för närliggande områden, så att det inte bara blir ett slag i magen. Södermalm är omöjligt, men Jordbro är fyra år bort.');
+    add('antagande',2,'Att beskedet ändrar vad folk gör. Att siffran går att räkna fram vet vi redan, så det är inte det som ska testas.');
+    add('metod',2,'Papperstest på 10 personer. Fråga vad de tror, visa siffran, fråga vad de tänker göra nu.');
+    add('metod',2,'Siffrorna räknas ut i förväg för fem eller sex vanliga kombinationer av ålder och område och skrivs på lappar. Ingen kod behövs för testet.');
+    add('kriterium',2,'Minst 5 av 10 uppger något konkret de tänker göra, till exempel ställa sig i kön, bredda området eller titta på andrahand. Artiga svar som att det var intressant räknas inte.');
+    add('kriterium',2,'Utfall: uppfyllt. 7 av 10 uppgav något konkret. Det som flyttade dem var inte den dåliga siffran utan den andra siffran, alltså samma uträkning för ett annat område eller för nyproduktion.');
+
+
+    add('losning','park','Realistisk matchning mot inkomst, kötid och område.');
+    add('losning','park','Kökalkylator som visar väntetid per område.');
+    add('losning','park','Bluffkoll som flaggar varningstecken i andrahandsannonser.');
+    add('losning','park','Checklista för förstagångsflyttare, i rätt ordning.');
+    add('losning','park','Hyresjämförelse mot faktiska nivåer i området.');
+    add('losning','park','Formulär med sex frågor om annonsen som ger grönt, gult eller rött.');
+    add('losning','park','Färdig meddelandemall med frågor som avslöjar en bluffuthyrare.');
+    add('losning','park','Kontraktskoll som visar vad som saknas i ett andrahandskontrakt.');
+    return {cards:c, verdicts:{0:'no',1:'ok',2:'ok'}};
+  }
+
+  var state=seed();
+
+  var grid=document.getElementById('jbGrid');
+  var park=document.getElementById('jbPark');
+  var scroller=document.getElementById('jbScroll');
+  var savedTag=document.getElementById('jbSaved');
+
+  var saveTimer=null;
+  function save(){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){
+      try{
+        window.storage.set(KEY,JSON.stringify(state)).then(function(){
+          savedTag.classList.add('on');
+          setTimeout(function(){savedTag.classList.remove('on');},1100);
+        }).catch(function(e){console.error('Kunde inte spara',e);});
+      }catch(e){console.error('Kunde inte spara',e);}
+    },350);
+  }
+
+  function load(){
+    try{
+      return window.storage.get(KEY).then(function(r){
+        if(r&&r.value){ var d=JSON.parse(r.value); if(d&&d.cards) state=d; }
+      }).catch(function(){});
+    }catch(e){ return Promise.resolve(); }
+  }
+
+  function cardsIn(row,col){
+    return state.cards.filter(function(c){ return c.row===row && String(c.col)===String(col); });
+  }
+
+  function makeCard(c,rowDef){
+    var el=document.createElement('div');
+    el.className='jb-card'+(rowDef.key_row?' is-key':'');
+    el.dataset.id=c.id;
+
+    var grip=document.createElement('button');
+    grip.className='jb-grip';
+    grip.style.setProperty('--bar',rowDef.bar);
+    grip.setAttribute('aria-label','Flytta kortet');
+    el.appendChild(grip);
+
+    var t=document.createElement('div');
+    t.className='jb-text';
+    t.contentEditable='true';
+    t.textContent=c.text;
+    t.addEventListener('input',function(){ c.text=t.textContent; save(); });
+    el.appendChild(t);
+
+    var d=document.createElement('button');
+    d.className='jb-del';
+    d.innerHTML='&times;';
+    d.setAttribute('aria-label','Ta bort kortet');
+    d.addEventListener('click',function(){
+      state.cards=state.cards.filter(function(x){return x.id!==c.id;});
+      render(); save();
+    });
+    el.appendChild(d);
+
+    attachDrag(grip,el,c);
+    return el;
+  }
+
+  function fillZone(zone,row,col,rowDef,focusId){
+    zone.innerHTML='';
+    var list=cardsIn(row,col);
+    if(!list.length && NOTES[row+'|'+col]){
+      var n=document.createElement('p');
+      n.className='jb-note';
+      n.textContent=NOTES[row+'|'+col];
+      zone.appendChild(n);
+    }
+    list.forEach(function(c){ zone.appendChild(makeCard(c,rowDef)); });
+    if(col!=='park'){
+      var add=document.createElement('button');
+      add.className='jb-add';
+      add.textContent='Lägg till kort';
+      add.addEventListener('click',function(){
+        var c={id:nid(),row:row,col:col,text:''};
+        state.cards.push(c); render(c.id); save();
+      });
+      zone.appendChild(add);
+    }
+  }
+
+  function render(focusId){
+    grid.innerHTML='';
+
+    var corner=document.createElement('div');
+    corner.className='jb-corner';
+    grid.appendChild(corner);
+
+    for(var i=0;i<5;i++){
+      (function(i){
+        var h=document.createElement('div');
+        h.className='jb-col';
+        var nm=document.createElement('div');
+        nm.className='jb-col-name';
+        nm.textContent='Iteration '+(i+1);
+        h.appendChild(nm);
+        var vs=document.createElement('div');
+        vs.className='jb-verdicts';
+        [['open','Pågår'],['ok','Bekräftad'],['no','Förkastad']].forEach(function(p){
+          var b=document.createElement('button');
+          b.className='jb-v'; b.dataset.v=p[0]; b.textContent=p[1];
+          var cur=state.verdicts[i]||'open';
+          b.setAttribute('aria-pressed',cur===p[0]?'true':'false');
+          b.addEventListener('click',function(){ state.verdicts[i]=p[0]; render(); save(); });
+          vs.appendChild(b);
+        });
+        h.appendChild(vs);
+        grid.appendChild(h);
+      })(i);
+    }
+
+    ROWS.forEach(function(r){
+      var lab=document.createElement('div');
+      lab.className='jb-row-label'+(r.key_row?' is-key':'');
+      var nm=document.createElement('div'); nm.className='jb-row-name'; nm.textContent=r.label;
+      var ht=document.createElement('div'); ht.className='jb-row-hint'; ht.textContent=r.hint;
+      lab.appendChild(nm); lab.appendChild(ht);
+      grid.appendChild(lab);
+
+      for(var i=0;i<5;i++){
+        var cell=document.createElement('div');
+        cell.className='jb-cell dropzone'+(r.key_row?' is-key':'');
+        cell.dataset.row=r.key; cell.dataset.col=i;
+        fillZone(cell,r.key,i,r);
+        grid.appendChild(cell);
+      }
+    });
+
+    fillZone(park,'losning','park',ROWS[2]);
+
+    if(focusId){
+      var el=document.querySelector('[data-id="'+focusId+'"] .jb-text');
+      if(el) el.focus();
+    }
+  }
+
+  var drag=null;
+  function attachDrag(grip,cardEl,c){
+    grip.addEventListener('pointerdown',function(e){
+      e.preventDefault();
+      var r=cardEl.getBoundingClientRect();
+      drag={c:c,el:cardEl,ghost:null,dx:e.clientX-r.left,dy:e.clientY-r.top,
+            w:r.width,sx:e.clientX,sy:e.clientY,moved:false,target:null};
+      grip.setPointerCapture(e.pointerId);
+    });
+    grip.addEventListener('pointermove',function(e){
+      if(!drag) return;
+      if(!drag.moved){
+        if(Math.abs(e.clientX-drag.sx)<5 && Math.abs(e.clientY-drag.sy)<5) return;
+        drag.moved=true;
+        var g=drag.el.cloneNode(true);
+        g.className='jb-card jb-ghost'+(drag.el.classList.contains('is-key')?' is-key':'');
+        g.style.width=drag.w+'px';
+        document.body.appendChild(g);
+        drag.ghost=g;
+        drag.el.classList.add('dragging');
+      }
+      drag.ghost.style.left=(e.clientX-drag.dx)+'px';
+      drag.ghost.style.top=(e.clientY-drag.dy)+'px';
+
+      var under=document.elementFromPoint(e.clientX,e.clientY);
+      var zone=under?under.closest('.dropzone'):null;
+      if(zone!==drag.target){
+        if(drag.target) drag.target.classList.remove('over');
+        drag.target=zone;
+        if(zone) zone.classList.add('over');
+      }
+      var box=scroller.getBoundingClientRect();
+      if(e.clientX>box.right-60) scroller.scrollLeft+=14;
+      else if(e.clientX<box.left+60) scroller.scrollLeft-=14;
+    });
+    function finish(){
+      if(!drag) return;
+      if(drag.ghost) drag.ghost.remove();
+      drag.el.classList.remove('dragging');
+      if(drag.target){
+        drag.target.classList.remove('over');
+        if(drag.moved){
+          drag.c.row=drag.target.dataset.row==='park'?'losning':drag.target.dataset.row;
+          drag.c.col=drag.target.dataset.col;
+          drag=null; render(); save(); return;
+        }
+      }
+      drag=null;
+    }
+    grip.addEventListener('pointerup',finish);
+    grip.addEventListener('pointercancel',finish);
+  }
+
+  document.getElementById('jbAddPark').addEventListener('click',function(){
+    var c={id:nid(),row:'losning',col:'park',text:''};
+    state.cards.push(c); render(c.id); save();
+  });
+
+  document.getElementById('jbReset').addEventListener('click',function(){
+    if(!confirm('Detta rensar tavlan och lägger tillbaka utgångsläget. Fortsätta?')) return;
+    state=seed(); render(); save();
+  });
+
+  document.getElementById('jbCopy').addEventListener('click',function(){
+    var out=['JAVELIN BOARD','Första egna bostaden i Stockholm',''];
+    var names={open:'Pågår',ok:'Bekräftad',no:'Förkastad'};
+    for(var i=0;i<5;i++){
+      var any=ROWS.some(function(r){return cardsIn(r.key,i).length;});
+      if(!any) continue;
+      out.push('ITERATION '+(i+1)+' ['+names[state.verdicts[i]||'open']+']');
+      ROWS.forEach(function(r){
+        var l=cardsIn(r.key,i);
+        if(!l.length) return;
+        out.push('  '+r.label+':');
+        l.forEach(function(c){ out.push('    - '+c.text); });
+      });
+      out.push('');
+    }
+    var p=cardsIn('losning','park');
+    if(p.length){
+      out.push('PARKERADE LÖSNINGSIDÉER');
+      p.forEach(function(c){ out.push('  - '+c.text); });
+    }
+    var txt=out.join('\n');
+    var btn=this;
+    function done(){ var o=btn.textContent; btn.textContent='Kopierat'; setTimeout(function(){btn.textContent=o;},1400); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done).catch(function(){ window.prompt('Kopiera texten här:',txt); });
+    } else { window.prompt('Kopiera texten här:',txt); }
+  });
+
+  var p=load();
+  if(p&&p.then){ p.then(function(){ render(); }); } else { render(); }
+})();
+</script>
