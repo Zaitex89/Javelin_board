@@ -170,7 +170,7 @@
 
 <script>
 (function(){
-  var KEY='javelin_board_original_v1';
+  var KEY='javelin_board_v11';
 
   var ROWS=[
     {key:'kund',      label:'Kund',                   hint:'Vem exakt, inte alla',        bar:'var(--bar-kund)'},
@@ -178,7 +178,8 @@
     {key:'losning',   label:'Lösning',                hint:'Tom tills behovet är bekräftat', bar:'var(--bar-losning)'},
     {key:'antagande', label:'Riskigaste antagandet',  hint:'Det som fäller allt om det är fel', bar:'var(--signal-edge)', key_row:true},
     {key:'metod',     label:'Metod',                  hint:'Hur vi testar antagandet',    bar:'var(--bar-metod)'},
-    {key:'kriterium', label:'Lyckandekriterium',      hint:'Bestäms före testet',         bar:'var(--bar-kriterium)'}
+    {key:'kriterium', label:'Lyckandekriterium',      hint:'Bestäms före testet',         bar:'var(--bar-kriterium)'},
+    {key:'resultat',  label:'Resultat',               hint:'Vad svaren faktiskt visade',  bar:'var(--bar-resultat)'}
   ];
 
   var NOTES={
@@ -198,7 +199,7 @@
     add('antagande',0,'Målgruppen upplever osäkerheten om vad de har chans på som ett problem i sig, inte bara bostadsbristen.');
     add('metod',0,'Kundintervjuer i butik med 8 till 10 personer som sökt bostad senaste året.');
     add('kriterium',0,'Minst 7 av 10 beskriver spontant att de inte vet vad de har chans på. Minst 3 berättar om något de redan gör för att kompensera.');
-    add('kriterium',0,'Utfall: ej uppfyllt. Av 20 tillfrågade hade cirka 80 procent redan bostad, och de som faktiskt sökte visste vad de kunde få.');
+    add('resultat',0,'Utfall: ej uppfyllt. Av 20 tillfrågade hade cirka 80 procent redan bostad, och de som faktiskt sökte visste vad de kunde få.');
 
 
     add('kund',1,'Unga vuxna i Stockholm som ännu inte har egen bostad och räknar med att kön löser det.');
@@ -208,7 +209,7 @@
     add('metod',1,'Svaren jämförs i efterhand mot Bostadsförmedlingens kötider för det område personen nämner.');
     add('metod',1,'Rekrytering utanför butiken, för att inte upprepa urvalsfelet från iteration 1.');
     add('kriterium',1,'7 av 10 kan inte säga var deras uppskattning kommer ifrån, och minst hälften gissar minst fem år fel.');
-    add('kriterium',1,'Utfall: uppfyllt. 8 av 10 kunde inte säga var siffran kom ifrån. Fem underskattar och väntar, tre skriver av kön helt.');
+    add('resultat',1,'Utfall: uppfyllt. 8 av 10 kunde inte säga var siffran kom ifrån. Fem underskattar och väntar, tre skriver av kön helt.');
 
 
     add('kund',2,'Unga vuxna i Stockholm som har en gissning om kötid utan källa. Både de som underskattar och de som redan skrivit av kön.');
@@ -219,7 +220,9 @@
     add('metod',2,'Papperstest på 10 personer. Fråga vad de tror, visa siffran, fråga vad de tänker göra nu.');
     add('metod',2,'Siffrorna räknas ut i förväg för fem eller sex vanliga kombinationer av ålder och område och skrivs på lappar. Ingen kod behövs för testet.');
     add('kriterium',2,'Minst 5 av 10 uppger något konkret de tänker göra, till exempel ställa sig i kön, bredda området eller titta på andrahand. Artiga svar som att det var intressant räknas inte.');
-    add('kriterium',2,'Utfall: uppfyllt. 7 av 10 uppgav något konkret. Det som flyttade dem var inte den dåliga siffran utan den andra siffran, alltså samma uträkning för ett annat område eller för nyproduktion.');
+    add('resultat',2,'Utfall: uppfyllt. 7 av 10 uppgav något konkret. Det som flyttade dem var inte den dåliga siffran utan den andra siffran, alltså samma uträkning för ett annat område eller för nyproduktion.');
+    add('resultat',2,'Slutsats: vi bygger Uppvakningen. Den ska visa två siffror bredvid varandra och lika stora. En för området personen vill bo i, en för ett alternativ. Alternativet var det som fick folk att agera.');
+    add('resultat',2,'Nyproduktion ska vara lätt att välja. I Farsta tar en vanlig lägenhet 13,2 år och en nybyggd 4,4 år. Nästan ingen vi frågade visste att den skillnaden fanns.');
 
 
     add('losning','park','Realistisk matchning mot inkomst, kötid och område.');
