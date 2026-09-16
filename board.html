@@ -96,14 +96,6 @@
   }
   .jb-summary:focus{outline:none;background:#F3F1F8}
 
-  .jb-park{margin-top:22px;border:1px solid var(--rule);border-radius:4px;background:#FAF9FC;padding:12px}
-  .jb-park-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .jb-park-name{font-size:13px;font-weight:700;color:var(--lab-pre-ink)}
-  .jb-park-hint{font-size:11.5px;color:var(--muted)}
-  .jb-park-cards{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:44px}
-  .jb-park-cards .jb-card{width:248px;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:5px 4px}
-  .jb-park-cards.over{box-shadow:inset 0 0 0 2px var(--accent)}
-
   .jb-ghost{position:fixed;z-index:99;pointer-events:none;background:#fff;
     border:1px solid var(--accent);border-radius:3px;padding:6px;
     box-shadow:0 8px 18px rgba(31,34,48,.22)}
@@ -132,21 +124,11 @@
 
   <p class="jb-summary" id="jbSummary" contenteditable="true"></p>
 
-  <div class="jb-park">
-    <div class="jb-park-head">
-      <span class="jb-park-name">Parkerade lösningsidéer</span>
-      <span class="jb-park-hint">Utanför tavlan. Låg här tills behovet var bekräftat.</span>
-    </div>
-    <div class="jb-park-cards dropzone" id="jbPark" data-row="park" data-col="park"></div>
-    <button class="jb-btn" id="jbAddPark" style="margin-top:10px">Lägg till idé</button>
-  </div>
-
-  <p class="jb-foot">Dra i den smala listen till vänster om ett kort för att flytta det. Klicka i texten för att skriva om den. Allt sparas automatiskt.</p>
 </div>
 
 <script>
 (function(){
-  var KEY='javelin_board_mall_v1';
+  var KEY='javelin_board_mall_v3';
 
   var ROWS=[
     {key:'malgrupp',  label:'Målgrupp',            hint:'Vem undersöks?',                                   phase:'pre'},
@@ -184,7 +166,7 @@
     add('lardom',0,'Urvalet bet dåligt. Flera sa att det löser sig, utan att kunna säga varför. Den tron blev vårt nästa antagande.');
 
     add('malgrupp',1,'Unga vuxna i Stockholm som ännu inte har egen bostad och räknar med att kön löser det.');
-    add('problem',1,'Vi har sett att unga vuxna i Stockholm har en uppfattning om hur lång tid bostadskön tar, men inte kan säga var den kommer ifrån. Därför tror vi att de fattar beslut på en gissning, och att en siffra de kan lita på skulle ändra vad de gör.');
+    add('problem',1,'De har en uppfattning om hur lång tid bostadskön tar, men kan inte säga var den kommer ifrån. Beslutet att vänta eller söka fattas alltså på en gissning.');
     add('antagande',1,'Målgruppen kan inte belägga sin uppskattning av kötiden och underskattar den.');
     add('metod',1,'Vi ställer tre frågor till 10 personer. När tror du att du kan få en bostad genom kön? Var kommer den siffran ifrån? Vad har du gjort åt det hittills?');
     add('kriterium',1,'Om 7 av 10 inte kan säga var deras uppskattning kommer ifrån.');
@@ -202,20 +184,12 @@
     add('beslut',2,'Fortsätt');
     add('lardom',2,'Det var inte den dåliga siffran som flyttade folk, utan alternativet (t.ex de andra lägenheterna).');
 
-    add('losning','park','Realistisk matchning mot inkomst, kötid och område.');
-    add('losning','park','Bluffkoll som flaggar varningstecken i andrahandsannonser.');
-    add('losning','park','Checklista för förstagångsflyttare, i rätt ordning.');
-    add('losning','park','Hyresjämförelse mot faktiska nivåer i området.');
-    add('losning','park','Färdig meddelandemall med frågor som avslöjar en bluffuthyrare.');
-    add('losning','park','Kontraktskoll som visar vad som saknas i ett andrahandskontrakt.');
-
     return {cards:c, cols:3, summary:SUMMARY};
   }
 
   var state=seed();
 
   var grid=document.getElementById('jbGrid');
-  var park=document.getElementById('jbPark');
   var scroller=document.getElementById('jbScroll');
   var savedTag=document.getElementById('jbSaved');
   var summaryEl=document.getElementById('jbSummary');
@@ -286,17 +260,15 @@
       zone.appendChild(n);
     }
     list.forEach(function(c){ zone.appendChild(makeCard(c)); });
-    if(col!=='park'){
-      var add=document.createElement('button');
-      add.className='jb-add';
-      add.textContent='+';
-      add.title='Lägg till kort';
-      add.addEventListener('click',function(){
-        var c={id:nid(),row:row,col:col,text:''};
-        state.cards.push(c); render(c.id); save();
-      });
-      zone.appendChild(add);
-    }
+    var add=document.createElement('button');
+    add.className='jb-add';
+    add.textContent='+';
+    add.title='Lägg till kort';
+    add.addEventListener('click',function(){
+      var c={id:nid(),row:row,col:col,text:''};
+      state.cards.push(c); render(c.id); save();
+    });
+    zone.appendChild(add);
   }
 
   function render(focusId){
@@ -339,7 +311,6 @@
       }
     });
 
-    fillZone(park,'losning','park');
     if(document.activeElement!==summaryEl) summaryEl.textContent=state.summary||'';
 
     if(focusId){
@@ -394,7 +365,7 @@
       if(drag.target){
         drag.target.classList.remove('over');
         if(drag.moved){
-          drag.c.row=drag.target.dataset.row==='park'?'losning':drag.target.dataset.row;
+          drag.c.row=drag.target.dataset.row;
           drag.c.col=drag.target.dataset.col;
           drag=null; render(); save(); return;
         }
@@ -407,11 +378,6 @@
 
   document.getElementById('jbAddCol').addEventListener('click',function(){
     state.cols=(state.cols||3)+1; render(); save();
-  });
-
-  document.getElementById('jbAddPark').addEventListener('click',function(){
-    var c={id:nid(),row:'losning',col:'park',text:''};
-    state.cards.push(c); render(c.id); save();
   });
 
   document.getElementById('jbReset').addEventListener('click',function(){
@@ -435,11 +401,6 @@
       out.push('');
     }
     if(state.summary){ out.push('SAMMANFATTNING'); out.push(state.summary); out.push(''); }
-    var p=cardsIn('losning','park');
-    if(p.length){
-      out.push('PARKERADE LÖSNINGSIDÉER');
-      p.forEach(function(c){ out.push('  - '+c.text); });
-    }
     var txt=out.join('\n');
     var btn=this;
     function done(){ var o=btn.textContent; btn.textContent='Kopierat'; setTimeout(function(){btn.textContent=o;},1400); }
